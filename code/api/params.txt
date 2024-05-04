@@ -1,0 +1,97 @@
+List of APIs:
+URL : 
+
+
+- Get search filter data :
+URL: api/index.php?action=search_filter
+
+Parameters ( Optional ) :
+keyword
+lb_title
+auth_name
+sub_title
+
+----------------------------------------------
+
+- Get subject data :
+URL: api/index.php?action=get_subject
+
+Parameters ( Optional ) :
+sub_id
+sub_title
+
+----------------------------------------------
+
+- Get autuor data :
+URL: api/index.php?action=get_author
+
+Parameters ( Optional ) :
+auth_id
+auth_name
+
+----------------------------------------------
+
+- Get library book data :
+URL: api/index.php?action=get_library_books
+
+Parameters ( Optional ) :
+lb_id
+sub_id
+auth_id
+pub_id
+lb_title
+
+----------------------------------------------
+
+- Get Banner data :
+URL: api/index.php?action=get_banner
+
+
+----------------------------------------------
+
+- Get FAQs data :
+URL: api/index.php?action=get_faqs
+
+
+----------------------------------------------
+
+- Get Social Network Link data :
+URL: api/index.php?action=get_social_links
+
+
+----------------------------------------------
+
+- Get Content Data:
+URL: api/index.php?action=get_page_content
+
+-----------------------------------
+Page                    - cnt_id  -
+-----------------------------------
+Home                    -    1    -
+About us                -    2    -
+Contact Us              -    3    -
+-----------------------------------
+
+Parameters ( Required ) :
+cnt_id
+
+----------------------------------------------
+
+- Get Widgets Data:
+URL: api/index.php?action=get_page_widgets
+
+
+-----------------------------------
+Page                    - cnt_id  -
+-----------------------------------
+Home                    -    1    -
+About us                -    2    -
+Contact Us              -    3    -
+-----------------------------------
+
+Parameters ( Required ) :
+cnt_id
+wid_params
+
+----------------------------------------------
+

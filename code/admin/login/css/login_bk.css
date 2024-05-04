@@ -1,0 +1,78 @@
+@import url(http://fonts.googleapis.com/css?family=Raleway:400,200,300,100,600);
+body {
+  background: #333333;
+}
+.login-box {
+  background: #FFFFFF;
+  /*min-height: 300px;*/
+  width: 350px;
+  margin: 0px auto;
+  margin-top: 150px;
+}
+.login-box h1 {
+  color: #5BADAF;
+  font-size: 25px;
+  padding-top: 10px;
+  font-family: 'Raleway', Helvetica, Arial;
+  font-weight: 600;
+  text-align: center;
+  padding-top: 20px;
+}
+.login-box hr {
+  border-width: 1px;
+  border-color: #0b1d30;
+  opacity: 0.3;
+}
+.login-box h5 {
+  text-align: center;
+  font-family: 'Raleway';
+  font-weight: 600;
+  color: #5BADAF;
+  font-size: 13px;
+}
+.login-box h5 strong {
+  color: #dd636d;
+}
+.login-box .input-box {
+  margin-top: 20px;
+}
+.login-box .input-box .input-group-addon {
+  background: #333333;
+  border: 0px;
+  color: #FFFFFF;
+  border-radius: 0px;
+}
+.login-box .input-box input {
+  background: #575757;
+  border-radius: 0px;
+  border: none;
+  color: #FFFFFF !important;
+}
+.login-box .input-box .form-control:-moz-placeholder {
+  color: #FFFFFF;
+}
+.login-box .input-box .form-control::-moz-placeholder {
+  color: #FFFFFF;
+}
+.login-box .input-box .form-control:-ms-input-placeholder {
+  color: #FFFFFF;
+}
+.login-box .input-box .form-control::-webkit-input-placeholder {
+  color: #FFFFFF;
+}
+.login-box .input-box .form-control:focus {
+  box-shadow: none;
+}
+.login-box .input-box .btn-submit {
+  background: #5BADAF;
+  color: #FFFFFF;
+  border-radius: 0px;
+  outline: none !important;
+}
+.btn-submit{margin-bottom:30px;}
+
+@media (max-width: 400px) {
+  .login-box {
+    width: 260px;
+  }
+}
