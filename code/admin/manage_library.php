@@ -51,31 +51,12 @@
 
     if (isset($_REQUEST['btnAdd'])) {
         $lb_id = getMaximum("library_books", "lb_id");
-        $mfileName = "";
-        //$dirName = "images/library_books/";
-        $dirName = "../files/library_books/";
-        if (!empty($_FILES["mFile"]["name"])) {
-            $mfileName = $lb_id . "_" . $_FILES["mFile"]["name"];
-            $mfileName = str_replace(" ", "_", strtolower($mfileName));
-            if (move_uploaded_file($_FILES['mFile']['tmp_name'], $dirName . $mfileName)) {
-                createThumbnail2($dirName, $mfileName, $dirName . "th/", "138", "80");
-            }
-        }
-        mysqli_query($GLOBALS['conn'], "INSERT INTO library_books (lb_id, ban_name, ban_details, ban_file) VALUES (" . $lb_id . ",'" . dbStr(trim($_REQUEST['ban_name'])) . "', '" . dbStr(trim($_REQUEST['ban_details'])) . "', '" . $mfileName . "')") or die(mysqli_error($GLOBALS['conn']));
+        
+        mysqli_query($GLOBALS['conn'], "INSERT INTO library_books (lb_id, sub_id, auth_id, sub_auth_id, pub_id, lb_title, lb_subtitle, lb_accno, lb_dccno, lb_entrydate, lb_price, lb_place, lb_year, lb_source, lb_edition, lb_volume, lb_page, lb_series, lb_language, lb_isbn, lb_note) VALUES (" . $lb_id . ",'" . dbStr(trim($_REQUEST['sub_id'])) . "', '" . dbStr(trim($_REQUEST['auth_id'])) . "', '".dbStr(trim($_REQUEST['sub_auth_id']))."', '".dbStr(trim($_REQUEST['pub_id']))."', '".dbStr(trim($_REQUEST['lb_title']))."', '".dbStr(trim($_REQUEST['lb_subtitle']))."', '".dbStr(trim($_REQUEST['lb_accno']))."', '".dbStr(trim($_REQUEST['lb_dccno']))."', '".dbStr(trim($_REQUEST['lb_entrydate']))."', '".dbStr(trim($_REQUEST['lb_price']))."', '".dbStr(trim($_REQUEST['lb_place']))."', '".dbStr(trim($_REQUEST['lb_year']))."', '".dbStr(trim($_REQUEST['lb_source']))."', '".dbStr(trim($_REQUEST['lb_edition']))."', '".dbStr(trim($_REQUEST['lb_volume']))."', '".dbStr(trim($_REQUEST['lb_page']))."', '".dbStr(trim($_REQUEST['lb_series']))."', '".dbStr(trim($_REQUEST['lb_language']))."', '".dbStr(trim($_REQUEST['lb_isbn']))."', '".dbStr(trim($_REQUEST['lb_note']))."')") or die(mysqli_error($GLOBALS['conn']));
         header("Location: " . $_SERVER['PHP_SELF'] . "?" . $qryStrURL . "op=1");
     } elseif (isset($_REQUEST['btnUpdate'])) {
-        $dirName = "../files/library_books/";
-        $mfileName = $_REQUEST['mfileName'];
-        if (!empty($_FILES["mFile"]["name"])) {
-            @unlink("../files/images/library_books" . $_REQUEST['mfileName']);
-            @unlink("../files/images/library_books/th/" . $_REQUEST['mfileName']);
-            $mfileName = $_REQUEST['lb_id'] . "_" . $_FILES["mFile"]["name"];
-            $mfileName = str_replace(" ", "_", strtolower($mfileName));
-            if (move_uploaded_file($_FILES['mFile']['tmp_name'], $dirName . $mfileName)) {
-                createThumbnail2($dirName, $mfileName, $dirName . "th/", "138", "80");
-            }
-        }
-        mysqli_query($GLOBALS['conn'], "UPDATE library_books SET ban_name='" . dbStr(trim($_REQUEST['ban_name'])) . "', ban_details = '" . dbStr(trim($_REQUEST['ban_details'])) . "', ban_file='" . $mfileName . "' WHERE lb_id=" . $_REQUEST['lb_id']);
+        
+        mysqli_query($GLOBALS['conn'], "UPDATE library_books SET sub_id='" . dbStr(trim($_REQUEST['sub_id'])) . "', auth_id = '" . dbStr(trim($_REQUEST['auth_id'])) . "', sub_auth_id='".dbStr(trim($_REQUEST['sub_auth_id']))."', pub_id = '".dbStr(trim($_REQUEST['pub_id']))."', lb_title = '".dbStr(trim($_REQUEST['lb_title']))."', lb_subtitle = '".dbStr(trim($_REQUEST['lb_subtitle']))."', lb_accno = '".dbStr(trim($_REQUEST['lb_accno']))."', lb_dccno = '".dbStr(trim($_REQUEST['lb_dccno']))."', lb_entrydate = '".dbStr(trim($_REQUEST['lb_entrydate']))."', lb_price = '".dbStr(trim($_REQUEST['lb_price']))."', lb_place = '".dbStr(trim($_REQUEST['lb_place']))."', lb_year = '".dbStr(trim($_REQUEST['lb_year']))."', lb_source = '".dbStr(trim($_REQUEST['lb_source']))."', lb_edition = '".dbStr(trim($_REQUEST['lb_edition']))."', lb_volume = '".dbStr(trim($_REQUEST['lb_volume']))."', lb_page = '".dbStr(trim($_REQUEST['lb_page']))."', lb_series = '".dbStr(trim($_REQUEST['lb_series']))."', lb_language = '".dbStr(trim($_REQUEST['lb_language']))."', lb_isbn = '".dbStr(trim($_REQUEST['lb_isbn']))."', lb_note = '".dbStr(trim($_REQUEST['lb_note']))."' WHERE lb_id=" . $_REQUEST['lb_id']) or die(mysqli_error($GLOBALS['conn']));
         header("Location: " . $_SERVER['PHP_SELF'] . "?" . $qryStrURL . "op=2");
     } elseif (isset($_REQUEST['btnImport_books'])) {
         //print_r($_REQUEST);die();
@@ -176,6 +157,7 @@
             $sub_id = "";
             $sub_title = "";
             $auth_id = "";
+            $auth_name = "";
             $sub_auth_id = "";
             $subauthor_name = "";
             $pub_id = "";
@@ -301,115 +283,121 @@
 
                                                 <div class="form-group">
                                                     <label class="col-lg-2 col-md-2 control-label">Title</label>
-                                                    <div class="col-lg-4 col-md-4">
-                                                        <input type="text" class="form-control form-cascade-control required" name="ban_name" id="ban_name" value="<?php print($lb_title); ?>" placeholder="Title">
+                                                    <div class="col-lg-9 col-md-9">
+                                                        <input type="text" class="form-control form-cascade-control required" name="lb_title" id="lb_title" value="<?php print($lb_title); ?>" placeholder="Title">
                                                     </div>
-                                                    <label class="col-lg-1 col-md-1 control-label">Sub Title</label>
-                                                    <div class="col-lg-4 col-md-4">
-                                                        <input type="text" class="form-control form-cascade-control required" name="ban_name" id="ban_name" value="<?php print($lb_subtitle); ?>" placeholder="Sub Subject">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="col-lg-2 col-md-2 control-label">Sub Title</label>
+                                                    <div class="col-lg-9 col-md-9">
+                                                        <input type="text" class="form-control form-cascade-control required" name="lb_subtitle" id="lb_subtitle" value="<?php print($lb_subtitle); ?>" placeholder="Sub Subject">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-lg-2 col-md-2 control-label">Subject</label>
                                                     <div class="col-lg-9 col-md-9">
-                                                        <input type="text" class="form-control form-cascade-control required" name="ban_name" id="ban_name" value="<?php print($sub_title); ?>" placeholder="Subject">
+                                                        <input type="hidden" name="sub_id" id="sub_id" value="<?php print($sub_id); ?>">
+                                                        <input type="text" class="form-control form-cascade-control subject required" name="sub_title" id="sub_title" value="<?php print($sub_title); ?>" placeholder="Subject">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-lg-2 col-md-2 control-label">Author</label>
                                                     <div class="col-lg-4 col-md-4">
-                                                        <input type="text" class="form-control form-cascade-control required" name="ban_name" id="ban_name" value="<?php print($auth_name); ?>" placeholder="Author">
+                                                        <input type="hidden" name="auth_id" id="auth_id" value="<?php print($auth_id); ?>">
+                                                        <input type="text" class="form-control form-cascade-control required author" name="auth_name" id="auth_name" value="<?php print($auth_name); ?>" placeholder="Author">
                                                     </div>
                                                     <label class="col-lg-1 col-md-1 control-label">Subauthor</label>
                                                     <div class="col-lg-4 col-md-4">
-                                                        <input type="text" class="form-control form-cascade-control required" name="ban_name" id="ban_name" value="<?php print($subauthor_name); ?>" placeholder="Subauthor">
+                                                        <input type="hidden" name="sub_auth_id" id="sub_auth_id" value="<?php print($sub_auth_id); ?>">
+                                                        <input type="text" class="form-control form-cascade-control subauthor" name="subauthor_name" id="subauthor_name" value="<?php print($subauthor_name); ?>" placeholder="Subauthor">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-lg-2 col-md-2 control-label">Acc No</label>
                                                     <div class="col-lg-4 col-md-4">
-                                                        <input type="text" class="form-control form-cascade-control required" name="ban_name" id="ban_name" value="<?php print($lb_accno); ?>" placeholder="Acc No">
+                                                        <input type="text" class="form-control form-cascade-control required" name="lb_accno" id="lb_accno" value="<?php print($lb_accno); ?>" placeholder="Acc No">
                                                     </div>
                                                     <label class="col-lg-1 col-md-1 control-label">DDC No</label>
                                                     <div class="col-lg-4 col-md-4">
-                                                        <input type="text" class="form-control form-cascade-control required" name="ban_name" id="ban_name" value="<?php print($lb_dccno); ?>" placeholder="DDC No">
+                                                        <input type="text" class="form-control form-cascade-control required" name="lb_dccno" id="lb_dccno" value="<?php print($lb_dccno); ?>" placeholder="DDC No">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-lg-2 col-md-2 control-label">Entry Date</label>
                                                     <div class="col-lg-4 col-md-4">
-                                                        <input type="date" class="form-control form-cascade-control required" name="ban_name" id="ban_name" value="<?php print($lb_entrydate); ?>" placeholder="Entry Date">
+                                                        <input type="date" class="form-control form-cascade-control required" name="lb_entrydate" id="lb_entrydate" value="<?php print($lb_entrydate); ?>" placeholder="Entry Date">
                                                     </div>
                                                     <label class="col-lg-1 col-md-1 control-label">Price</label>
                                                     <div class="col-lg-4 col-md-4">
-                                                        <input type="text" class="form-control form-cascade-control required" name="ban_name" id="ban_name" value="<?php print($lb_price); ?>" placeholder="Price">
+                                                        <input type="text" class="form-control form-cascade-control required" name="lb_price" id="lb_price" value="<?php print($lb_price); ?>" placeholder="Price">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-lg-2 col-md-2 control-label">Publisher</label>
                                                     <div class="col-lg-4 col-md-4">
-                                                        <input type="text" class="form-control form-cascade-control required" name="ban_name" id="ban_name" value="<?php print($pub_name); ?>" placeholder="Publisher">
+                                                        <input type="hidden" name="pub_id" id="pub_id" value="<?php print($pub_id); ?>">
+                                                        <input type="text" class="form-control form-cascade-control publisher required" name="pub_name" id="pub_name" value="<?php print($pub_name); ?>" placeholder="Publisher">
                                                     </div>
                                                     <label class="col-lg-1 col-md-1 control-label">Place</label>
                                                     <div class="col-lg-4 col-md-4">
-                                                        <input type="text" class="form-control form-cascade-control required" name="ban_name" id="ban_name" value="<?php print($lb_place); ?>" placeholder="Place">
+                                                        <input type="text" class="form-control form-cascade-control required" name="lb_place" id="lb_place" value="<?php print($lb_place); ?>" placeholder="Place">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-lg-2 col-md-2 control-label">Year</label>
                                                     <div class="col-lg-4 col-md-4">
-                                                        <input type="number" maxlength="4" class="form-control form-cascade-control required" name="ban_name" id="ban_name" value="<?php print($lb_year); ?>" placeholder="Year">
+                                                        <input type="number" maxlength="4" class="form-control form-cascade-control required" name="lb_year" id="lb_year" value="<?php print($lb_year); ?>" placeholder="Year">
                                                     </div>
                                                     <label class="col-lg-1 col-md-1 control-label">Source</label>
                                                     <div class="col-lg-4 col-md-4">
-                                                        <input type="text" class="form-control form-cascade-control required" name="ban_name" id="ban_name" value="<?php print($lb_source); ?>" placeholder="Source">
+                                                        <input type="text" class="form-control form-cascade-control required" name="lb_source" id="lb_source" value="<?php print($lb_source); ?>" placeholder="Source">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-lg-2 col-md-2 control-label">Edition</label>
                                                     <div class="col-lg-4 col-md-4">
-                                                        <input type="text" class="form-control form-cascade-control required" name="ban_name" id="ban_name" value="<?php print($lb_edition); ?>" placeholder="Edition">
+                                                        <input type="text" class="form-control form-cascade-control required" name="lb_edition" id="lb_edition" value="<?php print($lb_edition); ?>" placeholder="Edition">
                                                     </div>
                                                     <label class="col-lg-1 col-md-1 control-label">Volume</label>
                                                     <div class="col-lg-4 col-md-4">
-                                                        <input type="text" class="form-control form-cascade-control required" name="ban_name" id="ban_name" value="<?php print($lb_volume); ?>" placeholder="Volume">
+                                                        <input type="text" class="form-control form-cascade-control required" name="lb_volume" id="lb_volume" value="<?php print($lb_volume); ?>" placeholder="Volume">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-lg-2 col-md-2 control-label">Page</label>
                                                     <div class="col-lg-4 col-md-4">
-                                                        <input type="number" class="form-control form-cascade-control required" name="ban_name" id="ban_name" value="<?php print($lb_page); ?>" placeholder="Page">
+                                                        <input type="number" class="form-control form-cascade-control required" name="lb_page" id="lb_page" value="<?php print($lb_page); ?>" placeholder="Page">
                                                     </div>
                                                     <label class="col-lg-1 col-md-1 control-label">Series</label>
                                                     <div class="col-lg-4 col-md-4">
-                                                        <input type="text" class="form-control form-cascade-control required" name="ban_name" id="ban_name" value="<?php print($lb_series); ?>" placeholder="Series">
+                                                        <input type="text" class="form-control form-cascade-control required" name="lb_series" id="lb_series" value="<?php print($lb_series); ?>" placeholder="Series">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-lg-2 col-md-2 control-label">Language</label>
                                                     <div class="col-lg-4 col-md-4">
-                                                        <input type="text" class="form-control form-cascade-control required" name="ban_name" id="ban_name" value="<?php print($lb_language); ?>" placeholder="Language">
+                                                        <input type="text" class="form-control form-cascade-control required" name="lb_language" id="lb_language" value="<?php print($lb_language); ?>" placeholder="Language">
                                                     </div>
                                                     <label class="col-lg-1 col-md-1 control-label">ISBN</label>
                                                     <div class="col-lg-4 col-md-4">
-                                                        <input type="text" class="form-control form-cascade-control required" name="ban_name" id="ban_name" value="<?php print($lb_isbn); ?>" placeholder="ISBN">
+                                                        <input type="text" class="form-control form-cascade-control required" name="lb_isbn" id="lb_isbn" value="<?php print($lb_isbn); ?>" placeholder="ISBN">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-lg-2 col-md-2 control-label">Note</label>
                                                     <div class="col-lg-9 col-md-9">
-                                                        <input type="text" class="form-control form-cascade-control required" name="ban_name" id="ban_name" value="<?php print($lb_note); ?>" placeholder="Note">
+                                                        <textarea type="text" class="form-control form-cascade-control required" rows="5" name="lb_note" id="lb_note" placeholder="Note"><?php print($lb_note); ?></textarea>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="inputEmail1" class="col-lg-2 col-md-3 control-label">&nbsp;</label>
                                                     <div class="col-lg-10 col-md-9">
-                                                        <!--<?php if ($_REQUEST['action'] == 1) { ?>
+                                                        <?php if ($_REQUEST['action'] == 1) { ?>
                                                             <button type="submit" name="btnAdd" class="btn btn-primary btn-animate-demo">Submit</button>
-                                                    <?php } else { ?>
+                                                        <?php } else { ?>
                                                             <button type="submit" name="btnUpdate" class="btn btn-primary btn-animate-demo">Submit</button>
-                                                            <input type="hidden" name="mfileName" value="<?php print($mfileName); ?>" />
-                                                    <?php } ?>-->
+
+                                                        <?php } ?>
                                                         <button type="button" name="btnCancel" class="btn btn-default btn-animate-demo" onClick="javascript: window.location = '<?php print($_SERVER['PHP_SELF'] . "?" . $qryStrURL); ?>';">Cancel</button>
                                                     </div>
                                                 </div>
@@ -505,27 +493,27 @@
                                             <!--<label for="inputEmail1" class="col-lg-1 col-md-1 control-label padTop7" style="text-align: right;">Publishers: </label>-->
                                             <div class="col-lg-4 col-md-4">
                                                 <label for="inputEmail1" class=" control-label " style="text-align: right;">Author: </label>
-                                                <input type="hidden" name="auth_id" id="auth_id" value="<?php print($auth_id); ?>">
-                                                <input type="text" name="auth_title" id="auth_title" value="<?php print($auth_title); ?>" class="form-control form-cascade-control search_author" autocomplete="off" onchange="javascript: frmCat.submit();">
+                                                <input type="hidden" name="auth_id" id="search_auth_id" value="<?php print($auth_id); ?>">
+                                                <input type="text" name="auth_title" id="search_auth_title" value="<?php print($auth_title); ?>" class="form-control form-cascade-control search_author" autocomplete="off" onchange="javascript: frmCat.submit();">
                                             </div>
                                             <div class="col-lg-4 col-md-4">
                                                 <label for="inputEmail1" class=" control-label " style="text-align: right;">Sub Author: </label>
-                                                <input type="hidden" name="sub_auth_id" id="sub_auth_id" value="<?php print($sub_auth_id); ?>">
-                                                <input type="text" name="sub_auth_title" id="sub_auth_title" value="<?php print($sub_auth_title); ?>" class="form-control form-cascade-control search_sub_author" autocomplete="off" onchange="javascript: frmCat.submit();">
+                                                <input type="hidden" name="sub_auth_id" id="search_sub_auth_id" value="<?php print($sub_auth_id); ?>">
+                                                <input type="text" name="sub_auth_title" id="search_sub_auth_title" value="<?php print($sub_auth_title); ?>" class="form-control form-cascade-control search_sub_author" autocomplete="off" onchange="javascript: frmCat.submit();">
                                             </div>
                                             <div class="col-lg-4 col-md-4">
                                                 <label for="inputEmail1" class=" control-label " style="text-align: right;">Publisher: </label>
-                                                <input type="hidden" name="pub_id" id="pub_id" value="<?php print($pub_id); ?>">
-                                                <input type="text" name="pub_name" id="pub_name" value="<?php print($pub_name); ?>" class="form-control form-cascade-control publisher" autocomplete="off" onchange="javascript: frmCat.submit();">
+                                                <input type="hidden" name="pub_id" id="search_pub_id" value="<?php print($pub_id); ?>">
+                                                <input type="text" name="pub_name" id="search_pub_name" value="<?php print($pub_name); ?>" class="form-control form-cascade-control search_publisher" autocomplete="off" onchange="javascript: frmCat.submit();">
                                             </div>
                                             <div class="col-lg-4 col-md-4">
                                                 <label for="inputEmail1" class=" control-label " style="text-align: right;">Subject: </label>
-                                                <input type="hidden" name="sub_id" id="sub_id" value="<?php print($sub_id); ?>">
-                                                <input type="text" name="sub_title" id="sub_title" value="<?php print($sub_title); ?>" class="form-control form-cascade-control search_subject" autocomplete="off" onchange="javascript: frmCat.submit();">
+                                                <input type="hidden" name="sub_id" id="search_sub_id" value="<?php print($sub_id); ?>">
+                                                <input type="text" name="sub_title" id="search_sub_title" value="<?php print($sub_title); ?>" class="form-control form-cascade-control search_subject" autocomplete="off" onchange="javascript: frmCat.submit();">
                                             </div>
                                             <div class="col-lg-8 col-md-8">
                                                 <label for="inputEmail1" class=" control-label " style="text-align: right;">Title: </label>
-                                                <input type="text" name="lb_title" id="lb_title" value="<?php print($lb_title); ?>" class="form-control form-cascade-control search_title" autocomplete="off" onchange="javascript: frmCat.submit();">
+                                                <input type="text" name="lb_title" id="search_lb_title" value="<?php print($lb_title); ?>" class="form-control form-cascade-control search_title" autocomplete="off" onchange="javascript: frmCat.submit();">
                                             </div>
                                         </div>
                                     </form>
@@ -547,12 +535,12 @@
                                             $pages = $p->findPages($count, $limit);
 
                                             ?>
-                                            <h4><i class="fa fa-bars"></i> Library (<?php print($count); ?>) </h4>
+                                            <h4><i class="fa fa-bars"></i> Library ( <strong> <?php print($count); ?> </strong> ) </h4>
                                             <div class="tools" style="color:white">
 
                                                 <div>
                                                     <a href="<?php print($_SERVER['PHP_SELF'] . "?" . $qryStrURL . "action=3"); ?>" title="Import Book"><i class="fa fa-upload"></i> Import Book</a>
-                                                    <!--<a href="<?php print($_SERVER['PHP_SELF'] . "?" . $qryStrURL . "action=1"); ?>" title="Add New"><i class="fa fa-plus"></i> Add New</a>-->
+                                                    <a href="<?php print($_SERVER['PHP_SELF'] . "?" . $qryStrURL . "action=1"); ?>" title="Add New"><i class="fa fa-plus"></i> Add New</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -602,8 +590,8 @@
                                                                         ?>
                                                                     </td>
                                                                     <td>
-                                                                        <!--<button type="button" class="btn btn-xs btn-warning" title="Edit" onClick="javascript: window.location = '<?php print($_SERVER['PHP_SELF'] . "?action=2&" . $qryStrURL . "lb_id=" . $row->lb_id); ?>';"><i class="fa fa-edit"></i></button>-->
-                                                                        <button type="button" class="btn btn-xs btn-primary" title="View Detail" onClick="javascript: window.location = '<?php print($_SERVER['PHP_SELF'] . "?action=2&" . $qryStrURL . "lb_id=" . $row->lb_id); ?>';"><i class="fa fa-eye"></i></button>
+                                                                        <button type="button" class="btn btn-xs btn-warning" title="Edit" onClick="javascript: window.location = '<?php print($_SERVER['PHP_SELF'] . "?action=2&" . $qryStrURL . "lb_id=" . $row->lb_id); ?>';"><i class="fa fa-edit"></i></button>
+                                                                        <!--<button type="button" class="btn btn-xs btn-primary" title="View Detail" onClick="javascript: window.location = '<?php print($_SERVER['PHP_SELF'] . "?action=2&" . $qryStrURL . "lb_id=" . $row->lb_id); ?>';"><i class="fa fa-eye"></i></button>-->
                                                                     </td>
                                                                 </tr>
                                                         <?php
@@ -652,7 +640,7 @@
     <?php include("includes/bottom_js.php"); ?>
 </body>
 <script>
-    $('input.search_author').autocomplete({
+    $('input.author').autocomplete({
         source: function(request, response) {
             $.ajax({
                 url: 'ajax_calls.php?action=search_author&auth_type=0',
@@ -670,6 +658,108 @@
         select: function(event, ui) {
             var auth_id = $("#auth_id");
             var auth_title = $("#auth_title");
+            $(auth_id).val(ui.item.auth_id);
+            $(auth_title).val(ui.item.value);
+            //frmCat.submit();
+            //return false;
+        }
+    });
+
+    $('input.sub_author').autocomplete({
+        source: function(request, response) {
+            $.ajax({
+                url: 'ajax_calls.php?action=search_author&auth_type=1',
+                dataType: "json",
+                data: {
+                    term: request.term
+                },
+                success: function(data) {
+                    response(data);
+
+                }
+            });
+        },
+        minLength: 1,
+        select: function(event, ui) {
+            var sub_auth_id = $("#sub_auth_id");
+            var sub_auth_title = $("#sub_auth_title");
+            $(sub_auth_id).val(ui.item.auth_id);
+            $(sub_auth_title).val(ui.item.value);
+            //frmCat.submit();
+            //return false;
+        }
+    });
+
+    $('input.publisher').autocomplete({
+        source: function(request, response) {
+            $.ajax({
+                url: 'ajax_calls.php?action=publisher',
+                dataType: "json",
+                data: {
+                    term: request.term
+                },
+                success: function(data) {
+                    response(data);
+
+                }
+            });
+        },
+        minLength: 1,
+        select: function(event, ui) {
+            var pub_id = $("#pub_id");
+            var pub_name = $("#pub_name");
+            $(pub_id).val(ui.item.pub_id);
+            $(pub_name).val(ui.item.value);
+            //frmCat.submit();
+            //return false;
+        }
+    });
+
+    $('input.subject').autocomplete({
+        source: function(request, response) {
+            $.ajax({
+                url: 'ajax_calls.php?action=search_subject',
+                dataType: "json",
+                data: {
+                    term: request.term
+                },
+                success: function(data) {
+                    response(data);
+
+                }
+            });
+        },
+        minLength: 1,
+        select: function(event, ui) {
+            var sub_id = $("#sub_id");
+            var sub_title = $("#sub_title");
+            $(sub_id).val(ui.item.sub_id);
+            $(sub_title).val(ui.item.value);
+            //frmCat.submit();
+            //return false;
+        }
+    });
+</script>
+<!-- Search filter  -->
+<script>
+    $('input.search_author').autocomplete({
+        source: function(request, response) {
+            $.ajax({
+                url: 'ajax_calls.php?action=search_author&auth_type=0',
+                dataType: "json",
+                data: {
+                    term: request.term
+                },
+                success: function(data) {
+                    response(data);
+
+                }
+            });
+        },
+        minLength: 1,
+        select: function(event, ui) {
+            var auth_id = $("#search_auth_id");
+            var auth_title = $("#search_auth_title");
             $(auth_id).val(ui.item.auth_id);
             $(auth_title).val(ui.item.value);
             frmCat.submit();
@@ -694,8 +784,8 @@
         },
         minLength: 1,
         select: function(event, ui) {
-            var sub_auth_id = $("#sub_auth_id");
-            var sub_auth_title = $("#sub_auth_title");
+            var sub_auth_id = $("#search_sub_auth_id");
+            var sub_auth_title = $("#search_sub_auth_title");
             $(sub_auth_id).val(ui.item.auth_id);
             $(sub_auth_title).val(ui.item.value);
             frmCat.submit();
@@ -704,7 +794,7 @@
         }
     });
 
-    $('input.publisher').autocomplete({
+    $('input.search_publisher').autocomplete({
         source: function(request, response) {
             $.ajax({
                 url: 'ajax_calls.php?action=publisher',
@@ -720,8 +810,8 @@
         },
         minLength: 1,
         select: function(event, ui) {
-            var pub_id = $("#pub_id");
-            var pub_name = $("#pub_name");
+            var pub_id = $("#search_pub_id");
+            var pub_name = $("#search_pub_name");
             $(pub_id).val(ui.item.pub_id);
             $(pub_name).val(ui.item.value);
             frmCat.submit();
@@ -746,8 +836,8 @@
         },
         minLength: 1,
         select: function(event, ui) {
-            var sub_id = $("#sub_id");
-            var sub_title = $("#sub_title");
+            var sub_id = $("#search_sub_id");
+            var sub_title = $("#search_sub_title");
             $(sub_id).val(ui.item.sub_id);
             $(sub_title).val(ui.item.value);
             frmCat.submit();
@@ -772,7 +862,7 @@
         },
         minLength: 1,
         select: function(event, ui) {
-            var lb_title = $("#lb_title");
+            var lb_title = $("#search_lb_title");
             $(lb_title).val(ui.item.value);
             frmCat.submit();
             //return false;
